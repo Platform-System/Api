@@ -35,4 +35,17 @@ public sealed class KeycloakRoleClaimsMapperTests
 
         Assert.Single(principal.FindAll(ClaimTypes.Role));
     }
+
+    [Fact]
+    public void Map_WhenRoleClaimsContainInvalidJson_DoesNotThrow()
+    {
+        var identity = new ClaimsIdentity([], "Bearer", ClaimTypes.Name, ClaimTypes.Role);
+        var principal = new ClaimsPrincipal(identity);
+        identity.AddClaim(new Claim(PlatformClaimTypes.RealmAccess, "{invalid-json"));
+        identity.AddClaim(new Claim(PlatformClaimTypes.ResourceAccess, "{invalid-json"));
+
+        KeycloakRoleClaimsMapper.Map(principal);
+
+        Assert.Empty(principal.FindAll(ClaimTypes.Role));
+    }
 }

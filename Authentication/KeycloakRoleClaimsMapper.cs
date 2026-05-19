@@ -42,14 +42,21 @@ public static class KeycloakRoleClaimsMapper
         if (string.IsNullOrWhiteSpace(realmAccess))
             return;
 
-        using var document = JsonDocument.Parse(realmAccess);
-        if (!document.RootElement.TryGetProperty(PlatformClaimTypes.Roles, out var rolesElement) ||
-            rolesElement.ValueKind != JsonValueKind.Array)
+        try
+        {
+            using var document = JsonDocument.Parse(realmAccess);
+            if (!document.RootElement.TryGetProperty(PlatformClaimTypes.Roles, out var rolesElement) ||
+                rolesElement.ValueKind != JsonValueKind.Array)
+            {
+                return;
+            }
+
+            AddRoles(identity, rolesElement);
+        }
+        catch (JsonException)
         {
             return;
         }
-
-        AddRoles(identity, rolesElement);
     }
 
     /// <summary>
@@ -68,19 +75,26 @@ public static class KeycloakRoleClaimsMapper
         if (string.IsNullOrWhiteSpace(resourceAccess))
             return;
 
-        using var document = JsonDocument.Parse(resourceAccess);
-        if (document.RootElement.ValueKind != JsonValueKind.Object)
-            return;
-
-        foreach (var client in document.RootElement.EnumerateObject())
+        try
         {
-            if (!client.Value.TryGetProperty(PlatformClaimTypes.Roles, out var rolesElement) ||
-                rolesElement.ValueKind != JsonValueKind.Array)
-            {
-                continue;
-            }
+            using var document = JsonDocument.Parse(resourceAccess);
+            if (document.RootElement.ValueKind != JsonValueKind.Object)
+                return;
 
-            AddRoles(identity, rolesElement);
+            foreach (var client in document.RootElement.EnumerateObject())
+            {
+                if (!client.Value.TryGetProperty(PlatformClaimTypes.Roles, out var rolesElement) ||
+                    rolesElement.ValueKind != JsonValueKind.Array)
+                {
+                    continue;
+                }
+
+                AddRoles(identity, rolesElement);
+            }
+        }
+        catch (JsonException)
+        {
+            return;
         }
     }
 
