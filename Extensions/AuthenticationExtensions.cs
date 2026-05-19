@@ -107,6 +107,9 @@ public static class AuthenticationExtensions
     {
         // Đây là helper để fail sớm và fail rõ ràng nếu thiếu config bắt buộc.
         // Như vậy app sẽ báo đúng key nào thiếu thay vì lỗi mơ hồ ở bước auth sau này.
-        return section[key] ?? throw new InvalidOperationException($"{PlatformAuthenticationConstants.KeycloakSectionName}:{key} is not configured.");
+        var value = section[key];
+        return !string.IsNullOrWhiteSpace(value)
+            ? value
+            : throw new InvalidOperationException($"{PlatformAuthenticationConstants.KeycloakSectionName}:{key} is not configured.");
     }
 }

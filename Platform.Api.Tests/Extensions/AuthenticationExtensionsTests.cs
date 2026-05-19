@@ -20,4 +20,23 @@ public sealed class AuthenticationExtensionsTests
 
         Assert.Contains("Keycloak:auth-server-url is not configured.", exception.Message);
     }
+
+    [Fact]
+    public void AddPlatformAuthentication_WhenKeycloakConfigIsWhitespace_ThrowsInvalidOperationException()
+    {
+        var services = new ServiceCollection();
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["Keycloak:auth-server-url"] = "   ",
+                ["Keycloak:realm"] = "platform",
+                ["Keycloak:resource"] = "api"
+            })
+            .Build();
+
+        var exception = Assert.Throws<InvalidOperationException>(() =>
+            services.AddPlatformAuthentication(configuration));
+
+        Assert.Contains("Keycloak:auth-server-url is not configured.", exception.Message);
+    }
 }
