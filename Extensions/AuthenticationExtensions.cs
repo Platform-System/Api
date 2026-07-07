@@ -69,6 +69,9 @@ public static class AuthenticationExtensions
         // Bật authorization để [Authorize] hoạt động.
         services.AddAuthorization();
 
+        // Đăng ký custom dynamic policy provider cho cơ chế HasPermission.
+        services.AddSingleton<Microsoft.AspNetCore.Authorization.IAuthorizationPolicyProvider, Platform.Api.Authorization.PermissionPolicyProvider>();
+
         return services;
     }
 
