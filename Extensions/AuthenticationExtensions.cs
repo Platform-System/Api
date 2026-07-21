@@ -2,19 +2,19 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Platform.Api.Authentication;
+using Api.Authentication;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace Platform.Api.Extensions;
+namespace Api.Extensions;
 
 public static class AuthenticationExtensions
 {
-    public static IServiceCollection AddPlatformAuthentication(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
         // Đọc toàn bộ cấu hình auth từ appsettings rồi gom về object options.
         // Làm vậy giúp đoạn AddJwtBearer phía dưới ngắn và dễ đọc hơn.
-        var authOptions = configuration.GetPlatformAuthenticationOptions();
+        var authOptions = configuration.GetAuthenticationOptions();
 
         // Tắt mapping claim mặc định của .NET để ta đọc đúng tên claim gốc trong JWT.
         // Ví dụ: claim "sub" sẽ không bị tự đổi sang kiểu tên cũ như NameIdentifier.
@@ -47,7 +47,7 @@ public static class AuthenticationExtensions
 
                 // NameClaimType quyết định User.Identity.Name lấy từ claim nào.
                 // Với Keycloak thì "preferred_username" là giá trị dễ dùng nhất.
-                options.TokenValidationParameters.NameClaimType = PlatformAuthenticationConstants.PreferredUserNameClaim;
+                options.TokenValidationParameters.NameClaimType = AuthenticationConstants.PreferredUserNameClaim;
 
                 // Nếu sau này map role vào token, ASP.NET sẽ hiểu role theo ClaimTypes.Role.
                 options.TokenValidationParameters.RoleClaimType = ClaimTypes.Role;
@@ -70,12 +70,12 @@ public static class AuthenticationExtensions
         services.AddAuthorization();
 
         // Đăng ký custom dynamic policy provider cho cơ chế HasPermission.
-        services.AddSingleton<Microsoft.AspNetCore.Authorization.IAuthorizationPolicyProvider, Platform.Api.Authorization.PermissionPolicyProvider>();
+        services.AddSingleton<Microsoft.AspNetCore.Authorization.IAuthorizationPolicyProvider, Api.Authorization.PermissionPolicyProvider>();
 
         return services;
     }
 
-    public static WebApplication UsePlatformAuthentication(this WebApplication app)
+    public static WebApplication UseAuthentication(this WebApplication app)
     {
         // 1. Đọc token từ request và dựng HttpContext.User.
         app.UseAuthentication();
@@ -86,23 +86,23 @@ public static class AuthenticationExtensions
         return app;
     }
 
-    private static PlatformAuthenticationOptions GetPlatformAuthenticationOptions(this IConfiguration configuration)
+    private static AuthenticationOptions GetAuthenticationOptions(this IConfiguration configuration)
     {
         // Tất cả key auth hiện đang nằm trong section "Keycloak".
-        var keycloakSection = configuration.GetSection(PlatformAuthenticationConstants.KeycloakSectionName);
+        var keycloakSection = configuration.GetSection(AuthenticationConstants.KeycloakSectionName);
 
-        return new PlatformAuthenticationOptions
+        return new AuthenticationOptions
         {
             // TrimEnd('/') để tránh bị double slash khi ghép URL bên trong options.
-            AuthServerUrl = GetRequiredValue(keycloakSection, PlatformAuthenticationConstants.AuthServerUrlKey).TrimEnd('/'),
-            Realm = GetRequiredValue(keycloakSection, PlatformAuthenticationConstants.RealmKey),
-            Resource = GetRequiredValue(keycloakSection, PlatformAuthenticationConstants.ResourceKey),
+            AuthServerUrl = GetRequiredValue(keycloakSection, AuthenticationConstants.AuthServerUrlKey).TrimEnd('/'),
+            Realm = GetRequiredValue(keycloakSection, AuthenticationConstants.RealmKey),
+            Resource = GetRequiredValue(keycloakSection, AuthenticationConstants.ResourceKey),
 
             // Nếu config là "true" thì bật kiểm tra audience, còn thiếu/sai thì mặc định false.
-            VerifyTokenAudience = bool.TryParse(keycloakSection[PlatformAuthenticationConstants.VerifyTokenAudienceKey], out var parsedVerifyAudience) && parsedVerifyAudience,
+            VerifyTokenAudience = bool.TryParse(keycloakSection[AuthenticationConstants.VerifyTokenAudienceKey], out var parsedVerifyAudience) && parsedVerifyAudience,
 
             // Nếu không cấu hình ssl-required thì fallback về "none" để dev local đỡ bị lỗi.
-            SslRequired = keycloakSection[PlatformAuthenticationConstants.SslRequiredKey] ?? PlatformAuthenticationConstants.SslRequiredNone
+            SslRequired = keycloakSection[AuthenticationConstants.SslRequiredKey] ?? AuthenticationConstants.SslRequiredNone
         };
     }
 
@@ -113,6 +113,6 @@ public static class AuthenticationExtensions
         var value = section[key];
         return !string.IsNullOrWhiteSpace(value)
             ? value
-            : throw new InvalidOperationException($"{PlatformAuthenticationConstants.KeycloakSectionName}:{key} is not configured.");
+            : throw new InvalidOperationException($"{AuthenticationConstants.KeycloakSectionName}:{key} is not configured.");
     }
 }

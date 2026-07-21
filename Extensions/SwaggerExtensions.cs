@@ -5,7 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi;
 using Scalar.AspNetCore;
 
-namespace Platform.Api.Extensions;
+namespace Api.Extensions;
 
 public class BearerSecuritySchemeTransformer : IOpenApiDocumentTransformer
 {
@@ -49,7 +49,7 @@ public class BearerSecuritySchemeTransformer : IOpenApiDocumentTransformer
 
 public static class SwaggerExtensions
 {
-    public static IServiceCollection AddPlatformSwaggerJwt(this IServiceCollection services, string title)
+    public static IServiceCollection AddSwaggerJwt(this IServiceCollection services, string title)
     {
         services.AddOpenApi(options =>
         {
@@ -66,7 +66,7 @@ public static class SwaggerExtensions
         return services;
     }
 
-    public static WebApplication UsePlatformSwagger(this WebApplication app)
+    public static WebApplication UseSwagger(this WebApplication app)
     {
         if (app.Environment.IsDevelopment())
         {

@@ -1,14 +1,14 @@
-using Platform.Api.Authentication;
+using Api.Authentication;
 using Xunit;
 
-namespace Platform.Api.Tests.Authentication;
+namespace Api.Tests.Authentication;
 
-public sealed class PlatformAuthenticationOptionsTests
+public sealed class AuthenticationOptionsTests
 {
     [Fact]
     public void ComputedProperties_WhenSslRequiredIsNone_ReturnExpectedValues()
     {
-        var options = new PlatformAuthenticationOptions
+        var options = new AuthenticationOptions
         {
             AuthServerUrl = "http://localhost:8080/",
             Realm = "platform",
@@ -25,7 +25,7 @@ public sealed class PlatformAuthenticationOptionsTests
     [Fact]
     public void ComputedProperties_WhenSslRequiredIsExternal_RequiresHttpsMetadata()
     {
-        var options = new PlatformAuthenticationOptions
+        var options = new AuthenticationOptions
         {
             AuthServerUrl = "https://auth.example.com",
             Realm = "platform",

@@ -3,15 +3,15 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace Platform.Api.ErrorHandling;
+namespace Api.ErrorHandling;
 
-internal sealed class PlatformExceptionHandler : IExceptionHandler
+internal sealed class ApiExceptionHandler : IExceptionHandler
 {
-    private readonly ILogger<PlatformExceptionHandler> _logger;
+    private readonly ILogger<ApiExceptionHandler> _logger;
     private readonly IProblemDetailsService _problemDetailsService;
 
-    public PlatformExceptionHandler(
-        ILogger<PlatformExceptionHandler> logger,
+    public ApiExceptionHandler(
+        ILogger<ApiExceptionHandler> logger,
         IProblemDetailsService problemDetailsService)
     {
         _logger = logger;

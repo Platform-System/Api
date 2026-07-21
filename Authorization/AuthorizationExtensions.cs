@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Platform.Api.Authorization;
+namespace Api.Authorization;
 
 public static class AuthorizationExtensions
 {

@@ -4,15 +4,15 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.TestHost;
-using Platform.Api.Extensions;
+using Api.Extensions;
 using Xunit;
 
-namespace Platform.Api.Tests.Extensions;
+namespace Api.Tests.Extensions;
 
 public sealed class RuntimeExtensionsTests
 {
     [Fact]
-    public async Task UsePlatformRuntime_WhenUnhandledExceptionOccurs_ReturnsProblemDetails()
+    public async Task UseRuntime_WhenUnhandledExceptionOccurs_ReturnsProblemDetails()
     {
         await using var app = await CreateAppAsync(endpoints =>
         {
@@ -34,7 +34,7 @@ public sealed class RuntimeExtensionsTests
     }
 
     [Fact]
-    public async Task UsePlatformRuntime_MapsHealthEndpoint()
+    public async Task UseRuntime_MapsHealthEndpoint()
     {
         await using var app = await CreateAppAsync(_ => { });
 
@@ -47,10 +47,10 @@ public sealed class RuntimeExtensionsTests
     {
         var builder = WebApplication.CreateBuilder();
         builder.WebHost.UseTestServer();
-        builder.Services.AddPlatformRuntime();
+        builder.Services.AddRuntime();
 
         var app = builder.Build();
-        app.UsePlatformRuntime();
+        app.UseRuntime();
         mapEndpoints(app);
         await app.StartAsync();
 

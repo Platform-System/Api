@@ -1,7 +1,7 @@
 using System.Security.Claims;
 using System.Text.Json;
 
-namespace Platform.Api.Authentication;
+namespace Api.Authentication;
 
 /// <summary>
 /// Chuẩn hóa role từ JWT của Keycloak sang ClaimsIdentity của ASP.NET.
@@ -38,14 +38,14 @@ public static class KeycloakRoleClaimsMapper
     /// </summary>
     private static void AddRealmRoles(ClaimsPrincipal principal, ClaimsIdentity identity)
     {
-        var realmAccess = principal.FindFirst(PlatformClaimTypes.RealmAccess)?.Value;
+        var realmAccess = principal.FindFirst(KeycloakClaimTypes.RealmAccess)?.Value;
         if (string.IsNullOrWhiteSpace(realmAccess))
             return;
 
         try
         {
             using var document = JsonDocument.Parse(realmAccess);
-            if (!document.RootElement.TryGetProperty(PlatformClaimTypes.Roles, out var rolesElement) ||
+            if (!document.RootElement.TryGetProperty(KeycloakClaimTypes.Roles, out var rolesElement) ||
                 rolesElement.ValueKind != JsonValueKind.Array)
             {
                 return;
@@ -64,14 +64,14 @@ public static class KeycloakRoleClaimsMapper
     ///
     /// Ví dụ token:
     /// "resource_access": {
-    ///   "platform-gateway": { "roles": ["catalog.write"] }
+    ///   "gateway": { "roles": ["catalog.write"] }
     /// }
     ///
     /// Mapper này quét tất cả client có trong token và add toàn bộ role tìm thấy.
     /// </summary>
     private static void AddClientRoles(ClaimsPrincipal principal, ClaimsIdentity identity)
     {
-        var resourceAccess = principal.FindFirst(PlatformClaimTypes.ResourceAccess)?.Value;
+        var resourceAccess = principal.FindFirst(KeycloakClaimTypes.ResourceAccess)?.Value;
         if (string.IsNullOrWhiteSpace(resourceAccess))
             return;
 
@@ -83,7 +83,7 @@ public static class KeycloakRoleClaimsMapper
 
             foreach (var client in document.RootElement.EnumerateObject())
             {
-                if (!client.Value.TryGetProperty(PlatformClaimTypes.Roles, out var rolesElement) ||
+                if (!client.Value.TryGetProperty(KeycloakClaimTypes.Roles, out var rolesElement) ||
                     rolesElement.ValueKind != JsonValueKind.Array)
                 {
                     continue;

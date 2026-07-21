@@ -1,6 +1,6 @@
-namespace Platform.Api.Authentication;
+namespace Api.Authentication;
 
-public static class PlatformClaimTypes
+public static class KeycloakClaimTypes
 {
     public const string Subject = "sub";
     public const string Email = "email";

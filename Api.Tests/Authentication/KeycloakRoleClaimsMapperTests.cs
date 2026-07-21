@@ -1,8 +1,8 @@
-using Platform.Api.Authentication;
+using Api.Authentication;
 using System.Security.Claims;
 using Xunit;
 
-namespace Platform.Api.Tests.Authentication;
+namespace Api.Tests.Authentication;
 
 public sealed class KeycloakRoleClaimsMapperTests
 {
@@ -11,8 +11,8 @@ public sealed class KeycloakRoleClaimsMapperTests
     {
         var identity = new ClaimsIdentity([], "Bearer", ClaimTypes.Name, ClaimTypes.Role);
         var principal = new ClaimsPrincipal(identity);
-        identity.AddClaim(new Claim(PlatformClaimTypes.RealmAccess, """{"roles":["admin","seller"]}"""));
-        identity.AddClaim(new Claim(PlatformClaimTypes.ResourceAccess, """{"gateway":{"roles":["catalog.write","admin"]},"api":{"roles":["seller"]}}"""));
+        identity.AddClaim(new Claim(KeycloakClaimTypes.RealmAccess, """{"roles":["admin","seller"]}"""));
+        identity.AddClaim(new Claim(KeycloakClaimTypes.ResourceAccess, """{"gateway":{"roles":["catalog.write","admin"]},"api":{"roles":["seller"]}}"""));
 
         KeycloakRoleClaimsMapper.Map(principal);
 
@@ -28,7 +28,7 @@ public sealed class KeycloakRoleClaimsMapperTests
     {
         var identity = new ClaimsIdentity([], "Bearer", ClaimTypes.Name, ClaimTypes.Role);
         var principal = new ClaimsPrincipal(identity);
-        identity.AddClaim(new Claim(PlatformClaimTypes.RealmAccess, """{"roles":["admin"]}"""));
+        identity.AddClaim(new Claim(KeycloakClaimTypes.RealmAccess, """{"roles":["admin"]}"""));
 
         KeycloakRoleClaimsMapper.Map(principal);
         KeycloakRoleClaimsMapper.Map(principal);
@@ -41,8 +41,8 @@ public sealed class KeycloakRoleClaimsMapperTests
     {
         var identity = new ClaimsIdentity([], "Bearer", ClaimTypes.Name, ClaimTypes.Role);
         var principal = new ClaimsPrincipal(identity);
-        identity.AddClaim(new Claim(PlatformClaimTypes.RealmAccess, "{invalid-json"));
-        identity.AddClaim(new Claim(PlatformClaimTypes.ResourceAccess, "{invalid-json"));
+        identity.AddClaim(new Claim(KeycloakClaimTypes.RealmAccess, "{invalid-json"));
+        identity.AddClaim(new Claim(KeycloakClaimTypes.ResourceAccess, "{invalid-json"));
 
         KeycloakRoleClaimsMapper.Map(principal);
 

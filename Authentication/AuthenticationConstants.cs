@@ -1,6 +1,6 @@
-namespace Platform.Api.Authentication;
+namespace Api.Authentication;
 
-public static class PlatformAuthenticationConstants
+public static class AuthenticationConstants
 {
     public const string KeycloakSectionName = "Keycloak";
     public const string AuthServerUrlKey = "auth-server-url";

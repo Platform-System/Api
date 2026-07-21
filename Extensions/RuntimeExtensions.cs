@@ -1,15 +1,15 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
-using Platform.Api.ErrorHandling;
+using Api.ErrorHandling;
 
-namespace Platform.Api.Extensions;
+namespace Api.Extensions;
 
 public static class RuntimeExtensions
 {
-    public static IServiceCollection AddPlatformRuntime(this IServiceCollection services)
+    public static IServiceCollection AddRuntime(this IServiceCollection services)
     {
-        services.AddExceptionHandler<PlatformExceptionHandler>();
+        services.AddExceptionHandler<ApiExceptionHandler>();
         services.AddProblemDetails(options =>
         {
             options.CustomizeProblemDetails = context =>
@@ -22,7 +22,7 @@ public static class RuntimeExtensions
         return services;
     }
 
-    public static WebApplication UsePlatformRuntime(this WebApplication app)
+    public static WebApplication UseRuntime(this WebApplication app)
     {
         app.UseExceptionHandler();
         app.MapHealthChecks("/health").AllowAnonymous();

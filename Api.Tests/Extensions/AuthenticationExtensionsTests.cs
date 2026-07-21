@@ -1,14 +1,14 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Platform.Api.Extensions;
+using Api.Extensions;
 using Xunit;
 
-namespace Platform.Api.Tests.Extensions;
+namespace Api.Tests.Extensions;
 
 public sealed class AuthenticationExtensionsTests
 {
     [Fact]
-    public void AddPlatformAuthentication_WhenKeycloakConfigMissing_ThrowsInvalidOperationException()
+    public void AddAuthentication_WhenKeycloakConfigMissing_ThrowsInvalidOperationException()
     {
         var services = new ServiceCollection();
         var configuration = new ConfigurationBuilder()
@@ -16,13 +16,13 @@ public sealed class AuthenticationExtensionsTests
             .Build();
 
         var exception = Assert.Throws<InvalidOperationException>(() =>
-            services.AddPlatformAuthentication(configuration));
+            services.AddAuthentication(configuration));
 
         Assert.Contains("Keycloak:auth-server-url is not configured.", exception.Message);
     }
 
     [Fact]
-    public void AddPlatformAuthentication_WhenKeycloakConfigIsWhitespace_ThrowsInvalidOperationException()
+    public void AddAuthentication_WhenKeycloakConfigIsWhitespace_ThrowsInvalidOperationException()
     {
         var services = new ServiceCollection();
         var configuration = new ConfigurationBuilder()
@@ -35,7 +35,7 @@ public sealed class AuthenticationExtensionsTests
             .Build();
 
         var exception = Assert.Throws<InvalidOperationException>(() =>
-            services.AddPlatformAuthentication(configuration));
+            services.AddAuthentication(configuration));
 
         Assert.Contains("Keycloak:auth-server-url is not configured.", exception.Message);
     }

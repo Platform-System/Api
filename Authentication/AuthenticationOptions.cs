@@ -1,6 +1,6 @@
-namespace Platform.Api.Authentication;
+namespace Api.Authentication;
 
-public sealed class PlatformAuthenticationOptions
+public sealed class AuthenticationOptions
 {
     public required string AuthServerUrl { get; init; }
     public required string Realm { get; init; }
@@ -10,5 +10,5 @@ public sealed class PlatformAuthenticationOptions
 
     public string Authority => $"{AuthServerUrl.TrimEnd('/')}/realms/{Realm}";
     public string MetadataAddress => $"{Authority}/.well-known/openid-configuration";
-    public bool RequireHttpsMetadata => !string.Equals(SslRequired, PlatformAuthenticationConstants.SslRequiredNone, StringComparison.OrdinalIgnoreCase);
+    public bool RequireHttpsMetadata => !string.Equals(SslRequired, AuthenticationConstants.SslRequiredNone, StringComparison.OrdinalIgnoreCase);
 }
