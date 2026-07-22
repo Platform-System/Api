@@ -75,13 +75,13 @@ public static class AuthenticationExtensions
         return services;
     }
 
-    public static WebApplication UseAuthentication(this WebApplication app)
+    public static WebApplication UseAuthenticationAndAuthorization(this WebApplication app)
     {
         // 1. Đọc token từ request và dựng HttpContext.User.
-        Microsoft.AspNetCore.Builder.AuthAppBuilderExtensions.UseAuthentication(app);
+        app.UseAuthentication();
 
         // 2. Sau khi đã biết user là ai, mới kiểm tra [Authorize], policy, role...
-        Microsoft.AspNetCore.Builder.AuthorizationAppBuilderExtensions.UseAuthorization(app);
+        app.UseAuthorization();
 
         return app;
     }
