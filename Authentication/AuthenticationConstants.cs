@@ -4,6 +4,7 @@ public static class AuthenticationConstants
 {
     public const string KeycloakSectionName = "Keycloak";
     public const string AuthServerUrlKey = "auth-server-url";
+    public const string PublicAuthServerUrlKey = "public-auth-server-url";
     public const string RealmKey = "realm";
     public const string ResourceKey = "resource";
     public const string VerifyTokenAudienceKey = "verify-token-audience";
