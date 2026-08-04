@@ -11,9 +11,8 @@ public static class MigrationExtensions
     public static async Task ApplyMigrationsAsync<TContext>(this IApplicationBuilder app) where TContext : DbContext
     {
         using var scope = app.ApplicationServices.CreateScope();
-        var environment = scope.ServiceProvider.GetRequiredService<IHostEnvironment>();
         var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
-        var applyOnStartup = environment.IsDevelopment() || configuration.GetValue<bool>("Database:ApplyMigrationsOnStartup");
+        var applyOnStartup = configuration.GetValue("Database:ApplyMigrationsOnStartup", true);
 
         if (!applyOnStartup)
         {
